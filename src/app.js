@@ -27,6 +27,8 @@ let maxSubSteps = 3;
 
 let frameNumber = 0;
 
+let mouseIsHere = false;
+
 function animate(time) {
   requestAnimationFrame(animate);
 
@@ -66,7 +68,7 @@ function animate(time) {
 
   app.mesh.instanceMatrix.needsUpdate = true
 
-  if (frameNumber % 3 === 0) { // 20 FPS for mouse events
+  if (mouseIsHere && frameNumber % 3 === 0) { // 20 FPS for mouse events
     app.raycaster.setFromCamera(app.mouse, app.camera);
     let intersects = app.raycaster.intersectObjects( app.scene.children );
 
@@ -154,7 +156,7 @@ loader.load('4xxi-cube.glb', (gltf) => {
     let position = new Vector3();
     let quaternion = new Quaternion();
     let scale = new Vector3();
-    let out = tmpMatrix.decompose(position, quaternion, scale);
+    tmpMatrix.decompose(position, quaternion, scale);
 
     let cubeBody = new Body({
       mass: .1,
@@ -173,21 +175,6 @@ loader.load('4xxi-cube.glb', (gltf) => {
 
   animate();
 
-  // for (let x = 0; x < howMuch; x++) {
-  //   let xCoord = (x - howMuch / 2 + .5) * 1.5;
-  //   cube.position.set(xCoord, 0, 0);
-  //   app.scene.add(cube);
-  //   app.cubes.push(cube);
-
-
-  //   cube.body = cubeBody;
-
-  //   app.world.add(cubeBody);
-  //   app.bodies.push(cubeBody);
-  // }
-
-
-
 }, undefined, function ( error ) {
 
 	console.info( error );
@@ -205,3 +192,10 @@ function onWindowResize(){
 
 }
 
+document.body.addEventListener('mouseleave', () => {
+  mouseIsHere = false;
+})
+
+document.body.addEventListener('mouseenter', () => {
+  mouseIsHere = true;
+})
